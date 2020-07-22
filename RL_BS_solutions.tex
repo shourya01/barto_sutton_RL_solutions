@@ -522,4 +522,22 @@
 	\subsection*{Exercise 3.20}
 	\label{ss:3.20}
 	\addcontentsline{toc}{subsection}{\nameref{ss:3.20}}
+	Since the optimal sequence of actions from the starting tee is two drives and one putt (thereby sinking the ball in 3 strokes), the optimal state value function and the optimal actions for each state is given in the following figure.
+	\begin{figure}[H]
+		\centering
+		\fbox{\includegraphics[width=0.5\linewidth]{ex_3_20_fig_1}}
+		\caption{Optimal state-value function for the golf example.}
+	\end{figure}
+	%
+	\subsection*{Exercise 3.21}
+	\label{ss:3.21}
+	\addcontentsline{toc}{subsection}{\nameref{ss:3.21}}
+	The optimal action-value function for the action \texttt{putt} is described in the following figure.
+	\begin{figure}[H]
+		\centering
+		\fbox{\includegraphics[width=0.5\linewidth]{ex_3_21_fig_1}}
+		\caption{Optimal action-value function for the golf example.}
+	\end{figure}
+	\noindent
+	 For states $s$ where $q_*(s,\texttt{putt})=-4$, the optimal sequence of actions is $\texttt{putt}\rightarrow\texttt{drive}\rightarrow\texttt{putt}\rightarrow\texttt{putt}$. For states $s$ where $q_*(s,\texttt{putt})=-3$, the optimal sequence of actions is either $\texttt{putt}\rightarrow\texttt{drive}\rightarrow\texttt{putt}$ or $\texttt{putt}\rightarrow\texttt{putt}\rightarrow\texttt{putt}$ depending upon the location of $s$. For states $s$ where $q_*(s,\texttt{putt})=-2$, the optimal sequence of actions is $\texttt{putt}\rightarrow\texttt{putt}$. For states $s$ where $q_*(s,\texttt{putt})=-1$, the optimal action is $\texttt{putt}$. For states in the sand zone, $q_*(s,\texttt{putt}) = -3$ because a putt action cannot take the golf ball out of the sand (while a drive can), and therefore the optimal sequence of actions $\texttt{putt}\rightarrow\texttt{drive}\rightarrow\texttt{putt}$.
 \end{document}
