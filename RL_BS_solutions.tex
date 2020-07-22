@@ -443,5 +443,83 @@
 	&= \left(R_{t+1} + \gamma R_{t+2} + \cdots + \gamma^{T-(t+1)}R_{T} \right) + c\left(1+\gamma+\cdots+\gamma^{T-(t+1)} \right)\\
 	&= G_t + \frac{c(1-\gamma^{(T-t)})}{1-\gamma}.
 	\end{align*}
-	Letting $\phi(T) \ldef \frac{c(1-\gamma^{(T-t)})}{1-\gamma}$, we see that $v_\pi^c(s) = v_\pi(s) + \phi(T)$ for all states $s\in\mathcal{S}$ in the episodic case. Furthermore, note that $\phi(T)$ is \emph{increasing} in $T$ since $\frac{\partial \phi(T)}{\partial T} = \frac{c\gamma^{(T-t)}\log(1/\gamma)}{1-\gamma}>0$ for all $t\geq T$. Thus adding constant $c$ to all the rewards in the episodic case results in addition of the factor $phi(T)$ to the return $G_t$. Since $\phi(T)$ is increasing in $T$, it means that the agent will have an incentive to take a longer amount of time to complete the task in any given episode.
+	Letting $\phi(T) \ldef \frac{c(1-\gamma^{(T-t)})}{1-\gamma}$, we see that $v_\pi^c(s) = v_\pi(s) + \phi(T)$ for all states $s\in\mathcal{S}$ in the episodic case. Furthermore, note that $\phi(T)$ is \emph{increasing} in $T$ since $\frac{\partial \phi(T)}{\partial T} = \frac{c\gamma^{(T-t)}\log(1/\gamma)}{1-\gamma}>0$ for all $c>0$ and $t\geq T$. Thus adding constant $c$ to all the rewards in the episodic case results in addition of the factor $\phi(T)$ to the return $G_t$. Since $\phi(T)$ is increasing in $T$, it means that the agent will have an incentive to take a longer amount of time to complete the task in any given episode.
+	%
+	\subsection*{Exercise 3.17}
+	\label{ss:3.17}
+	\addcontentsline{toc}{subsection}{\nameref{ss:3.17}}
+	Using the definition of $q_{\pi}(s,a)$, we see that
+	\begin{align*}
+	q_{\pi}(s,a) &= \mathbb{E} \left[ G_t | S_t = s, A_t = a \right]\\
+	&= \mathbb{E}_\pi \left[ R_{t+1} + \gamma G_{t+1} | S_t = s, A_t = a \right]\\
+	&\stackrel{[r10]}{=} \mathbb{E}_\pi \left[ R_{t+1} + \gamma \mathbb{E}_\pi \left[ G_{t+1} | S_{t+1} = s'\right] | S_t = s, A_t = a \right]\\
+	&\stackrel{[r11]}{=} \mathbb{E}_\pi \left[ R_{t+1} + \gamma \mathbb{E}_\pi \left[ \mathbb{E}_\pi \left[ G_{t+1} | S_{t+1} = s', A_{t+1} = a' \right] | S_{t+1} = s' \right] | S_t = s, A_t = a \right]\\	
+	&\stackrel{[r12]}{=} \mathbb{E}_\pi \left[ R_{t+1} + \gamma \mathbb{E}_\pi \left[ q_{\pi}(s',a') | S_{t+1} = s' \right] | S_t = s, A_t = a \right]\\
+	&= \mathbb{E}_\pi \left[ R_{t+1} + \gamma \sum_{a'\in\mathcal{A}(s')} \pi(a'|s')q_{\pi}(s',a') | S_t = s, A_t = a \right]\\
+	&= \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} p(s',r|s,a) \left[ r + \gamma \sum_{a'\in\mathcal{A}(s')} \pi(s'|a')q_{\pi}(s',a') \right].
+	\end{align*}
+	In the above, in [r10] and [r11], we have used the law of total expectations which says that $\mathbb{E} [ \mathbb{E} [ X|Y,Z  ] | Y] = \mathbb{E} [ X | Y]$ for random variables $X$, $Y$, and $Z$, while in [r12] we have used the definition of $q_{\pi}(s,a)$.
+	%
+	\subsection*{Exercise 3.18}
+	\label{ss:3.18}
+	\addcontentsline{toc}{subsection}{\nameref{ss:3.18}}
+	$V_{\pi}(s)$ as an expectation over $q_{\pi}(s,a)$ is given by
+	\begin{equation*}
+	v_{\pi}(s) = \mathbb{E}_{\pi} \left[ q_\pi(s,a) | S_{t} = s \right].
+	\end{equation*}
+	In terms of $\pi(a|s)$, 
+	\begin{equation*}
+	v_\pi(s) = \sum_{a\in\mathcal{A}(s)} \pi(a|s)q_{\pi}(s,a).
+	\end{equation*}
+	%
+	\subsection*{Exercise 3.19}
+	\label{ss:3.19}
+	\addcontentsline{toc}{subsection}{\nameref{ss:3.19}}
+	We can write $q_\pi(s,a)$ in terms of value function of the future state $v_\pi(S_{t+1})$ as follows.
+	\begin{align*}
+	q_\pi(s,a) &= \mathbb{E}_\pi \left[ G_t | S_t = s, A_t = a \right]\\
+	&= \mathbb{E}_\pi \left[ R_{t+1} + \gamma G_{t+1} | |S_t = s, A_t = a \right]\\
+	&= \mathbb{E}_\pi\left[ R_{t+1} + \mathbb{E}_{\pi} \left[ G_{t+1} | S_{t+1} \right] | S_t = s, A_t = a \right]\\
+	&= \mathbb{E}_\pi\left[ R_{t+1} + v_{\pi}(S_{t+1}) | S_t = s, A_t = a \right]\\
+	&\stackrel{[r13]}{=} \mathbb{E}\left[ R_{t+1} + v_{\pi}(S_{t+1}) | S_t = s, A_t = a \right].
+	\end{align*}
+	In [r13], the outer expectation is not conditioned upon the policy $\pi$ because once the values of $S_{t}$ and $A_t$ are fixed as $s$ and $\pi$ respectively, then the probability of values of $S_{t+1}$ and $R_{t+1}$ is described by the system model $p(s',t|s,a)$ and not the policy probabilities $\pi(a|s)$. To show the same, we expand the expectation above in terms of $p(s',t|s,a)$
+	\begin{align*}
+	q_{\pi}(s,a) = \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} p(s',r|s,a) \left[ r + \gamma v_{\pi}(s') \right].
+	\end{align*}
+	%
+	\subsection*{Important note: Bellman Optimality Condition}
+	\label{ss:bell-op-con}
+	\addcontentsline{toc}{subsection}{\nameref{ss:bell-op-con}}
+	In this section we will prove the Bellman optimality condition. It is given as a relation between $v_*(s)$ and $q_{\pi_*}(s,a)$ as follows.
+	\begin{align*}
+	v_*(s) = \max\limits_{a\in\mathcal{A}(s)} q_{\pi_*}(s,a).
+	\end{align*}
+	We will now prove the above. Note that
+	\begin{align*}
+	v_*(s) &= \max\limits_\pi v_\pi (s), \;\forall s \in \mathcal{S}\\
+	&= \max\limits_\pi \sum_{a\in\mathcal{A}(s)} \pi(a|s) q_\pi(s,a).
+	\end{align*}
+	Let $\pi_*$ be an optimal policy. Then by bellman recursion equation we have
+	\begin{align*}
+	v_*(s) = \sum_{a\in\mathcal{A}(s)} \pi_*(a|s)q_{\pi_*}(s,a).
+	\end{align*}
+	Let $a_*(s) \ldef \arg\max\limits_{a\in\mathcal{A}(s)} q_{\pi_*}(s,a)$. Then, by definition, $q_{\pi_*}(s,a_*(s)) \geq q_{\pi_*}(s,a), \; \forall a\in\mathcal{A}(s)$. Since $v_*(s)$ is a convex combination of $q_{\pi_*}(s,a)$ for different values of $a$, we can maximize $v_*(s)$ by setting $\pi_*(a_*(s)|s)=1$ and $\pi_*(a|s) =0$ for all other values of $a\in\mathcal{A}(s)$. Thus, we have
+	\begin{align*}
+	v_*(s) &= \sum_{\substack{a\in\mathcal{A}(s)\\ a\neq a_*(s)}} \pi_*(a|s)q_{\pi_*}(s,a) + \pi_*(a_*(s)|s) q_{\pi_*}(s,a_*(s))\\
+	&=q_{\pi_*}(s,a_*(s)) = \arg\max\limits_{s\in\mathcal{A}(s)} q_{\pi_*}(s,a).
+	\end{align*} 
+	The corresponding optimal policy is deterministic and is given by
+	\begin{align*}
+	\pi_*(a|s) = 
+	\begin{cases}
+	1,& \text{if } a = \displaystyle\arg\max_{a'\in\mathcal{A}(s)} q_{\pi_*}(s,a')\\
+	0,& \text{otherwise.}
+	\end{cases}
+	\end{align*}
+	Note that throughout the proof, we have assumed that $a_*(s) = \arg\max\limits_{a\in\mathcal{A}(s)}q_{\pi_*}(s,a)$ is unique. However, in case $a_*(s)$ is not unique, we can use any of the maximizing values, with ties broken arbitrarily.
+	%
+	\subsection*{Exercise 3.20}
+	\label{ss:3.20}
+	\addcontentsline{toc}{subsection}{\nameref{ss:3.20}}
 \end{document}
