@@ -540,4 +540,136 @@
 	\end{figure}
 	\noindent
 	 For states $s$ where $q_*(s,\texttt{putt})=-4$, the optimal sequence of actions is $\texttt{putt}\rightarrow\texttt{drive}\rightarrow\texttt{putt}\rightarrow\texttt{putt}$. For states $s$ where $q_*(s,\texttt{putt})=-3$, the optimal sequence of actions is either $\texttt{putt}\rightarrow\texttt{drive}\rightarrow\texttt{putt}$ or $\texttt{putt}\rightarrow\texttt{putt}\rightarrow\texttt{putt}$ depending upon the location of $s$. For states $s$ where $q_*(s,\texttt{putt})=-2$, the optimal sequence of actions is $\texttt{putt}\rightarrow\texttt{putt}$. For states $s$ where $q_*(s,\texttt{putt})=-1$, the optimal action is $\texttt{putt}$. For states in the sand zone, $q_*(s,\texttt{putt}) = -3$ because a putt action cannot take the golf ball out of the sand (while a drive can), and therefore the optimal sequence of actions $\texttt{putt}\rightarrow\texttt{drive}\rightarrow\texttt{putt}$.
+	 %
+	 \subsection*{Exercise 3.22}
+	 \label{ss:3.22}
+	 \addcontentsline{toc}{subsection}{\nameref{ss:3.22}}
+	 We refer to the top state as $A$, the left state as $B$, and the right state as $C$. We also refer to the left action as $L$ and the right action as $R$. By the Bellman optimality condition, the value of $v_*(A)$ is given as
+	 \begin{align*}
+	 v_*(A) &= \max \left\{ p(B,+1|A,L)\left[ +1 + \gamma v_*(B)\right], p(C,0|A,R)\left[ 0+\gamma v_*(C)\right] \right\}\\&= \max\{ 1+\gamma v_*(B),\gamma v_*(C) \}.
+	 \end{align*}
+	 The optimal state values $v_*(B)$ and $v_*(C)$ using the Bellman optimality condition is given as
+	 \begin{align*}
+	 v_*(B) = \gamma v_*(A), \; \; v_*(C) = 2 + \gamma v_*(A).
+	 \end{align*}
+	 Putting the previous equation together, we get
+	 \begin{align*}
+	 v_*(A) &= \max\{ 1+\gamma^2v_*(A),2\gamma+\gamma^2v_*(A) \}\\
+	 &= \gamma^2v_*(A) + \max \{ 1,2\gamma \}\\
+	 \therefore v_*(A) &= \frac{\max\{1,2\gamma\}}{1-\gamma^2}.
+	 \end{align*}
+	 From the above, when $\gamma=0$, the optimal action is left and $v_*(A) = 1$, when $\gamma=0.9$ the optimal action is right and $v_*(A) = 9.47$, and finally, when $\gamma=0.5$, \emph{both} actions left and right are optimal and $v_*(A) = 1.33$.
+	 %
+	 \subsection*{Exercise 3.23}
+	 \label{ss:3.23}
+	 \addcontentsline{toc}{subsection}{\nameref{ss:3.23}}
+	 \newcommand{\hi}{\texttt{High}}
+	 \newcommand{\lo}{\texttt{Low}}
+	 The two states in the recycling robot problem are $\hi$ and $\lo$. Correspondingly, we denote the actions search, wait, and recharge with $S$, $W$, and $R$ respectively. $r_s$ and $r_w$ denote the rewards for searching and waiting, respectively, while recharging from $\lo$ to $\hi$ incurs 0 cost, and being `rescued', i.e. going from $\lo$ to $\hi$ while searching incurs a cost of -3. We are going to find out the expressions for $q_*(\hi,S)$, $q_*(\hi,W)$, $q_*(\lo,S)$, $q_*(\lo,W)$ and $q_*(\lo,R)$.
+	 \begin{align*}
+	 q_*(\hi,S) &= p(\hi,r_s|\hi,S)\left[ r_s + \gamma\max\limits_{a'} q_*(\hi,a') \right]+ p(\lo,r_s|H,S) \left[ r_s + \gamma\max\limits_{a'} q_*(\lo,a') \right]\\
+	 &= \alpha \left[ r_s +  \gamma\max\limits_{a'} q_*(\hi,a') \right] + (1-\alpha)\left[ r_s + \gamma\max\limits_{a'} q_*(\lo,a') \right]\\
+	 &= r_s + \gamma\left[ \alpha  \max\limits_{a'} q_*(\hi,a') + (1-\alpha) \max\limits_{a'} q_*(\lo,a') \right].\\
+	 q_*(\lo,S) &= p(\lo,r_s|\hi,S)\left[ r_s + \gamma\max\limits_{a'} q_*(\lo,a') \right]+ p(\hi,-3|\hi,S) \left[ -3 + \gamma\max\limits_{a'} q_*(\hi,a') \right]\\
+	 &= \beta \left[ r_s +  \gamma\max\limits_{a'} q_*(\lo,a') \right] + (1-\beta)\left[ -3 + \gamma\max\limits_{a'} q_*(\hi,a') \right]\\
+	 &= -3(1-\beta) + \beta r_s + \gamma\left[ \beta  \max\limits_{a'} q_*(\lo,a') + (1-\beta) \max\limits_{a'} q_*(\hi,a') \right].\\
+	 q_*(\hi,W) &= p(\hi,r_w|\hi,W)\left[ r_w + \gamma\max\limits_{a'} q_*(\hi,a') \right]\\
+	 &= r_w + \gamma\max\limits_{a'} q_*(\hi,a').\\ 
+	 q_*(\lo,W) &= p(\lo,r_w|\lo,W)\left[ r_w + \gamma\max\limits_{a'} q_*(\lo,a') \right]\\
+	 &= r_w + \gamma\max\limits_{a'} q_*(\lo,a').\\
+	 q_*(\lo,R) &= p(\hi,0|\lo,R) \left[0 + \gamma\max\limits_{a'} q_*(\hi,a')\right]\\
+	 &= \gamma\max\limits_{a'} q_*(\hi,a').
+	 \end{align*}
+	 %
+	 \subsection*{Exercise 3.24}
+	 \label{ss:3.24}
+	 \addcontentsline{toc}{subsection}{\nameref{ss:3.24}}
+	 Since all the actions $\{ \texttt{north},\texttt{south},\texttt{east},\texttt{west} \}$ are optimal for optimal state $A$, we choose the action $a = \texttt{north}$ for our calculations. We have
+	 \begin{align*}
+	 v_*(A) = p(A',+10|A,\texttt{north}) \left[ +10 + \gamma v_*(A') \right] = \left[ 10 + (0.9)(16) \right] = 24.4. 
+	 \end{align*}
+	 %
+	 \subsection*{Exercise 3.25}
+	 \label{ss:3.25}
+	 \addcontentsline{toc}{subsection}{\nameref{ss:3.25}}
+	 The value of $v_*(s)$ in terms of $q_*(s,a)$ is given as
+	 \begin{equation*}
+	 v_*(s) = \max\limits_{a\in\mathcal{A}(s)} q_{\pi^*}(s,a) = \max\limits_{a\in\mathcal{A}(s)} q_{*}(s,a).
+	 \end{equation*}
+	 %
+	 \subsection*{Exercise 3.26}
+	 \label{ss:3.26}
+	 \addcontentsline{toc}{subsection}{\nameref{ss:3.26}}
+	 We can write down $q_*(s,a)$ in terms of $v_*(s)$ as follows.
+	 \begin{align*}
+	 q_*(s,a) &= \max\limits_\pi \mathbb{E}_\pi \left[ G_t | S_t = s, A_t = a\right]\\
+	 &= \max\limits_\pi \mathbb{E}_\pi \left[ R_{t+1} + \gamma \mathbb{E}_\pi \left[ G_{t+1} | S_{t+1} = s' \right] | S_t = s, A_t = a\right]\\
+	 &\stackrel{[r14]}{=} \mathbb{E} \left[ R_{t+1} + \gamma \max\limits_\pi \mathbb{E}_\pi \left[ G_{t+1} | S_{t+1} \right] | S_t = s, A_t = a\right]\\
+	 &\stackrel{[r15]}{=} \mathbb{E} \left[ R_{t+1} + \gamma v_*(S_{t+1}) | S_t = s, A_t = a\right]\\
+	 &= \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} p(s',r|s,a) \left[ r + \gamma v_*(s') \right].
+	 \end{align*}
+	 In the above, in [r14] we have used the linearity of expectation operator and the non-dependence of $R_{t+1}$ on $\pi$ once $S_t$ and $A_t$ are known, while in [r15] we have used the definition of $v_*(s)$.
+	 %
+	 \subsection*{Exercise 3.27}
+	 \label{ss:3.27}
+	 \addcontentsline{toc}{subsection}{\nameref{ss:3.27}}
+	 The optimal value function $v_*(s)$ in terms of optimal action value function $q_*(s,a)$ is given as
+	 \begin{align*}
+	 v_*(s) = \max\limits_{a\in\mathcal{A}(s)} q_*(s,a).
+	 \end{align*}
+	 Corresponding to the optimal value, there is a \emph{deterministic} policy $\pi^*$ which is optimal. It is given as
+	 \begin{align*}
+	 \pi_*(a|s) = 
+	 \begin{cases}
+	 1,& \text{if } a = \displaystyle\arg\max_{a'\in\mathcal{A}(s)} q_{*}(s,a')\\
+	 0,& \text{otherwise.}
+	 \end{cases}
+	 \end{align*}
+	 In case the $a'$-maximiser of $q_*(s,a')$ is not unique, select \emph{one} of the maximisers, with ties broken arbitrarily.
+	 %
+	 \subsection*{Exercise 3.28}
+	 \label{ss:3.28}
+	 \addcontentsline{toc}{subsection}{\nameref{ss:3.28}}
+	 We know that the Bellman optimality condition for $v_*(s)$ is given as
+	 \begin{align*}
+	 v_*(s) = \max\limits_{a\in\mathcal{A}(s)} \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} p(s',r|s,a)\left[ r + \gamma v_*(s') \right].
+	 \end{align*}
+	 From the above recursion equation of the optimal value function, we can derive an optimal deterministic policy $\pi^*$ as
+	 \begin{align*}
+	 \pi_*(a|s) = 
+	 \begin{cases}
+	 1,& \text{if } a = \displaystyle\arg\max_{a'\in\mathcal{A}(s)} \sum_{r\in\mathcal{R}} p(s',r|s,a)\left[ r + \gamma v_*(s') \right]\\
+	 0,& \text{otherwise.}
+	 \end{cases}
+	 \end{align*}
+	 In case the $a'$-maximiser in the above equation is not unique, select \emph{one} of the maximisers, with ties broken arbitrarily.
+	 %
+	 \subsection*{Exercise 3.29}
+	 \label{ss:3.29}
+	 \addcontentsline{toc}{subsection}{\nameref{ss:3.29}}
+	 We use the following equations to resolve $p(s',r|s,a)$ with $r(s,a)$ and $p(s',s,a)$.
+	 \begin{align*}
+	 \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} rp(s',r|s,a) &= \mathbb{E} \left[ R_{t+1}|S_t=s,A_t=a \right] = r(s,a)\\
+	 \sum_{r\in\mathcal{R}} p(s',r|s,a) &= p(s'|s,a).
+	 \end{align*}
+	 We first consider Bellman recursion equation for $v_\pi$.
+	 \begin{align*}
+	 v_\pi(s) &= \sum_{a\in\mathcal{A}(s)} \pi(a|s) \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} p(s',r|s,a)\left[r+\gamma v_*(s') \right]\\
+	 &= \sum_{a\in\mathcal{A}(s)}  \pi(a|s) \left[ r(s,a) + \gamma \sum_{s'\in\mathcal{S}} p(s'|s,a)v_\pi(s') \right].
+	 \end{align*}
+	 Next, we consider the Bellman recursion equation for $q_\pi$.
+	 \begin{align*}
+	 q_{\pi}(s,a) &= \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} p(s',r|s,a) \left[ r + \gamma \sum_{a'\in\mathcal{A}(s')} \pi(a'|s') q_\pi (s',a') \right]\\
+	 &= r(s,a) + \gamma \sum_{s'\in\mathcal{S}} \sum_{a'\in\mathcal{A}(s')} p(s'|s,a) \pi(s'|s) q_\pi(s',a')
+	 \end{align*}
+	 Next, we consider the Bellman optimality condition for $v_*$.
+	 \begin{align*}
+	 v_*(s) &= \max\limits_{a\in\mathcal{A}(s)} \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} p(s',r|s,a) \left[ r + \gamma v_*(s') \right]\\
+	 &= \max\limits_{a\in\mathcal{A}(s)} \left\{ r(s,a) + \gamma \sum_{s'\in\mathcal{S}} p(s'|s,a)v_*(s') \right\}.
+	 \end{align*}
+	 Finally, we consider the Bellman optimality condition for $q_*$.
+	 \begin{align*}
+	 q_*(s,a) &= \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} p(s',r|s,a) \left[ r + \gamma \max\limits_{a'\in\mathcal{A}(s')} q_*(s',a') \right]\\
+	 &= r(s,a) + \gamma\sum_{s'\in\mathcal{S}} p(s'|s,a) \max\limits_{a'\in\mathcal{A}(s')}\left\{ q_*(s',a') \right\}.  
+	 \end{align*}
 \end{document}
