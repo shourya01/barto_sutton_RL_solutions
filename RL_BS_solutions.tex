@@ -672,4 +672,75 @@
 	 q_*(s,a) &= \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} p(s',r|s,a) \left[ r + \gamma \max\limits_{a'\in\mathcal{A}(s')} q_*(s',a') \right]\\
 	 &= r(s,a) + \gamma\sum_{s'\in\mathcal{S}} p(s'|s,a) \max\limits_{a'\in\mathcal{A}(s')}\left\{ q_*(s',a') \right\}.  
 	 \end{align*}
+	 \newpage
+	 %
+	 \section{Chapter 4}
+	 %
+	 \newcommand{\statesp}{\mathcal{S}^+}
+	 \newcommand{\actionspa}{\mathcal{A}(s)}
+	 \newcommand{\actionspb}{\mathcal{A}(s')}
+	 \newcommand{\rewardsp}{\mathcal{R}}
+	 \subsection*{Exercise 4.1}
+	 \label{ss:4.1}
+	 \addcontentsline{toc}{subsection}{\nameref{ss:4.1}}
+	 In this exercise, we note that $\gamma=1$, the value function $v_\pi(s)$ is provided in Figure 4.1, and we recall the following Bellman iteration.
+	 \begin{align*}
+	 q_\pi(a,s) = \sum_{s\in\statesp}\sum_{r\in\rewardsp} p(s',r|s,a) \left[ r + \gamma v_\pi (s') \right].
+	 \end{align*}
+	 We can calculate $q_\pi(11,\texttt{down})$ and $q_\pi(7,\texttt{down})$ as
+	 \begin{align*}
+	 q_\pi(11,\texttt{down}) &= p(\texttt{terminal},-1|11,\texttt{down}) \left[ -1 + \gamma v_\pi (\texttt{terminal}) \right]\\
+	 &= 1\left[ -1 + \gamma.0 \right] = -1.\\
+	 q_\pi(7,\texttt{down}) &= p(11,-1|7,\texttt{down}) \left[ -1 + \gamma v_\pi (11) \right]\\
+	 &= 1\left[ -1+\gamma(-11) \right] = -15.
+	 \end{align*}
+	 %
+	 \subsection*{Exercise 4.2}
+	 \label{ss:4.2}
+	 \addcontentsline{toc}{subsection}{\nameref{ss:4.2}}
+	 In this exercise, we use the Bellman iteration formula for state values given as
+	 \begin{align*}
+	 v_\pi(s) = \sum_{a\in\actionspa} \pi(a|s) \sum_{s\in\statesp} \sum_{r\in\rewardsp} p(s',r|s,a)\left[ r + \gamma v_\pi (s') \right].
+	 \end{align*}
+	 First, we evaluate $v_\pi(13)$ in terms of $v_\pi(15)$ as follows.
+	 \begin{align}
+	 \notag
+	 v_\pi(13) &= 0.25 \left[ -4 + \gamma \left( v_\pi(9) + v_\pi(12) + v_\pi(14) + v_\pi(15) \right) \right]\\
+	 \notag
+	 &= -1 + 0.25 \left( -20 -22 -14 + v_\pi(15) \right)\\
+	 \label{eq:e4.1_1}
+	 &= -15 + 0.25 v_\pi(15).
+	 \end{align}
+	 We now evaluate $v_\pi(15)$ in terms of $v_\pi(13)$ as follows.
+	 \begin{align}
+	 \notag
+	 v_\pi(15) &= 0.25 \left[ -4 + \gamma \left( v_\pi(13) + v_\pi(12) + v_\pi(14) + v_\pi(15) \right) \right]\\
+	 \notag
+	 &= -1 + 0.25 \left[ -22 -14 + v_\pi(13) + v_\pi(15) \right]\\
+	 \notag
+	 v_\pi(15) - 0.25 v_\pi(15) &= -10 + 0.25v_\pi(13)\\
+	 \label{eq:e4.1_2}
+	 0.75v_\pi(15) &= -10 + 0.25v_\pi(13).
+	 \end{align}
+	 Note that~\eqref{eq:e4.1_1} and~\eqref{eq:e4.1_2} form a system of 2 variables in 2 equations. Solving the same, we get
+	 \begin{align*}
+	 v_\pi(15) = -20, \; \; v_\pi(13) = -20.
+	 \end{align*}
+	 Thus, $v_\pi(15) = -20$, and the value function of state $13$ does not change, i.e. $v_\pi(13) = -20$.
+	 %
+	 \subsection*{Exercise 4.3}
+	 \label{ss:4.3}
+	 \addcontentsline{toc}{subsection}{\nameref{ss:4.3}}
+	 We can obtain a recursive equation for $q_\pi(s,a)$ as follows.
+	 \begin{align*}
+	 q_\pi(s,a) &= \mathbb{E}_\pi \left[ G_t | S_t=s, A_t = a\right]\\
+	 &= \mathbb{E}\left[ R_{t+1} + \gamma G_{t+1} | S_t = s, A_t = a \right]\\
+	 &= \mathbb{E} \left[ R_{t+1} + \gamma \mathbb{E}_\pi \left[ \mathbb{E}_\pi \left[ G_{t+1} | S_{t+1}=s', A_{t+1}=a' \right] | S_{t+1} = s' \right] | S_t = s, A_t = a \right]\\
+	 &= \mathbb{E}_\pi \left[ R_{t+1} + \gamma \sum_{a'\in\actionspb} \pi(a'|s') q_\pi(a',s') \big| S_t =s, A_t = a \right]\\
+	 &= \sum_{s'\in\statesp} \sum_{r\in\rewardsp} p(s',r|s,a) \left[ r + \gamma \sum_{a'\in\actionspb} \pi(a'|s')q(s',a') \right].
+	 \end{align*}
+	 Now, starting from $q_0$, we can successively generate $q_1,q_2,q_3,\cdots$ for all state-action pairs $(s,a)$ by using the above Bellman recursion equation as a fixed point equation.
+	 \begin{align*}
+	 q_{k+1}(s,a) = \sum_{s'\in\statesp} \sum_{r\in\rewardsp} p(s',r|s,a) \left[ r + \gamma \sum_{a'\in\actionspb} \pi(a'|s') q_k(s',a') \right].
+	 \end{align*}
 \end{document}
