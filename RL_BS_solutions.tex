@@ -5,6 +5,7 @@
 \usepackage{graphicx,float}
 \usepackage[colorlinks=true,linkcolor=blue]{hyperref}
 \usepackage{subcaption}
+\usepackage{algorithm,algpseudocode}
 
 \newcommand{\mcal}[1]{\mathcal{#1}}
 \newcommand{\ldef}{\stackrel{\Delta}{=}}
@@ -15,6 +16,9 @@
 \begin{document}
 	\maketitle
 	\tableofcontents
+	%
+	\newpage
+	%
 	\section{Chapter 2}
 	%
 	\subsection*{Exercise 2.1}
@@ -70,22 +74,22 @@
 	\label{ss:2.5}
 	\addcontentsline{toc}{subsection}{\nameref{ss:2.5}}
 	\begin{figure}[H]
+		\centering
 		\begin{subfigure}{0.45\textwidth}
-			\includegraphics[width=\linewidth]{ex_2_5_fig_1a}
+			\fbox{\includegraphics[width=\linewidth]{figure/ex_2_5_fig_1a}}
 			\caption{$q_{*}(a)$ is stationary}
 		\end{subfigure}
 		\begin{subfigure}{0.45\textwidth}
-			\includegraphics[width=\linewidth]{ex_2_5_fig_1b}
+			\fbox{\includegraphics[width=\linewidth]{figure/ex_2_5_fig_1b}}
 			\caption{$q_{*}(a)$ is stationary}
 			\label{f1}
 		\end{subfigure}
-	\newline
 		\begin{subfigure}{0.45\textwidth}
-			\includegraphics[width=\linewidth]{ex_2_5_fig_2a}
+			\fbox{\includegraphics[width=\linewidth]{figure/ex_2_5_fig_2a}}
 			\caption{$\mathbb{E}\left[ q_{*}(a) \right]$ increases by 0.01 on every timestep}
 		\end{subfigure}
 		\begin{subfigure}{0.45\textwidth}
-			\includegraphics[width=\linewidth]{ex_2_5_fig_2b}
+			\fbox{\includegraphics[width=\linewidth]{figure/ex_2_5_fig_2b}}
 			\caption{$\mathbb{E}\left[ q_{*}(a) \right]$ increases by 0.01 on every timestep}
 			\label{f2}
 		\end{subfigure}
@@ -168,7 +172,7 @@
 	\addcontentsline{toc}{subsection}{\nameref{ss:2.10}}
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.5\linewidth]{ex_2_10_fig_1}
+		\fbox{\includegraphics[width=0.5\linewidth]{figure/ex_2_10_fig_1}}
 		\caption{Parameter study of various bandit algorithms.}
 	\end{figure}
 	%
@@ -525,7 +529,7 @@
 	Since the optimal sequence of actions from the starting tee is two drives and one putt (thereby sinking the ball in 3 strokes), the optimal state value function and the optimal actions for each state is given in the following figure.
 	\begin{figure}[H]
 		\centering
-		\fbox{\includegraphics[width=0.5\linewidth]{ex_3_20_fig_1}}
+		\fbox{\includegraphics[width=0.5\linewidth]{figure/ex_3_20_fig_1}}
 		\caption{Optimal state-value function for the golf example.}
 	\end{figure}
 	%
@@ -535,7 +539,7 @@
 	The optimal action-value function for the action \texttt{putt} is described in the following figure.
 	\begin{figure}[H]
 		\centering
-		\fbox{\includegraphics[width=0.5\linewidth]{ex_3_21_fig_1}}
+		\fbox{\includegraphics[width=0.5\linewidth]{figure/ex_3_21_fig_1}}
 		\caption{Optimal action-value function for the golf example.}
 	\end{figure}
 	\noindent
@@ -743,4 +747,146 @@
 	 \begin{align*}
 	 q_{k+1}(s,a) = \sum_{s'\in\statesp} \sum_{r\in\rewardsp} p(s',r|s,a) \left[ r + \gamma \sum_{a'\in\actionspb} \pi(a'|s') q_k(s',a') \right].
 	 \end{align*}
+	 %
+	 \subsection*{Exercise 4.4}
+	 \label{ss:4.4}
+	 \addcontentsline{toc}{subsection}{\nameref{ss:4.4}}
+	 In order to circumvent the scenario presented in this exercise, in policy improvement, the line ``$\textit{old-action} \neq \pi(s)$, then $\textit{policy-stable} \leftarrow \textit{false}$'' should be replaced with ``$v_{\textit{old-action}}(s) \neq v_\pi(s)$, then $\textit{policy-stable} \leftarrow \textit{false}$''.
+	 %
+	 \subsection*{Exercise 4.5}
+	 \label{ss:4.5}
+	 \addcontentsline{toc}{subsection}{\nameref{ss:4.5}}
+ 	\begin{algorithm}[H]
+ 		\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+ 		\renewcommand{\algorithmicensure}{\textbf{Output:}}
+ 		\algdef{SE}[DOWHILE]{Do}{doWhile}{\algorithmicdo}[1]{\algorithmicwhile\ #1}
+ 		\let\oldReturn\Return
+ 		\renewcommand{\Return}{\State\oldReturn}
+ 		\algnewcommand{\algorithmicgoto}{\textbf{goto}}%
+ 		\algnewcommand{\Goto}[1]{\algorithmicgoto~\hyperref[#1]{\textsc{Policy Evaluation}}}%
+ 		\caption{Policy Iteration for $q_*(s,a)$}\label{policy-iter-q	}
+ 		\begin{algorithmic}[1]
+ 			\Require Initialize $Q(s,a)$ and $\pi(s)\in\mathcal{A}(s)$ for all $a\in\mathcal{A}(s)$ and $s\in\mathcal{S}$ arbitrarily. 
+ 			\Ensure $Q \approx q_*$ and $\pi \approx \pi_*$.
+ 			\Procedure{Policy Evaluation}{}\Comment{Compute $v_\pi$ from $\pi$}\label{policy-eval}
+ 			\Do\State $\Delta \leftarrow 0$
+ 				\For{$s\in\mathcal{S}$}
+ 					\For{$a\in\mathcal{A}(s)$}
+ 						\State $q \leftarrow Q(s,a)$
+ 						\State $Q(s,a) \leftarrow \sum_{s',r} p(s',r|s,a) \left[ r+\gamma Q(s,\pi(s)) \right]$
+ 						\State $\Delta \leftarrow \max\{ \Delta, |q-Q(s,a) | \}$
+ 					\EndFor
+ 				\EndFor
+ 			\doWhile{$\Delta\geq\theta$}
+ 			\EndProcedure
+ 			\State
+ 			\Procedure{Policy Improvement}{}\Comment{Get improved policy $\pi$ using state-action values $q_\pi$}
+ 			\State $\textit{policy-stable}\leftarrow\textit{true}$
+ 			\For{$s\in\mathcal{S}$}
+ 				\State $\textit{old-action} \leftarrow\pi(s)$
+ 				\State $\pi(s) = \arg\max\limits_{a\in\actionspa} \sum_{s\in\statesp}\sum_{r\in\rewardsp} p(s',r|s,a) \left[ r + \gamma Q(s,\pi(s)) \right]$
+ 				\State If $Q(s,\textit{old-action}) \neq Q(s,\pi(s))$ then $\textit{policy-stable}=\textit{false}$
+ 			\EndFor
+ 			\If{$\textit{policy-stable}$}
+ 				\Return $Q$ and $\pi$
+ 			\Else
+ 				\State \Goto{policy-eval}
+			\EndIf			
+ 			\EndProcedure
+ 		\end{algorithmic}
+ 	\end{algorithm}
+ 	%
+ 	\subsection*{Exercise 4.6}
+ 	\label{ss:4.6}
+ 	\addcontentsline{toc}{subsection}{\nameref{ss:4.6}}
+ 	Let the $\epsilon$-soft policy for $\epsilon \leq 1$ be denoted by $\pi_\epsilon$. Then in terms of the policy $\pi$ and probabilities $\pi_\epsilon(a|s)$, $\pi_\epsilon$ can be described as
+ 	\begin{align}
+ 	\pi_\epsilon(s|a) = \begin{cases}
+ 	(1-\epsilon) - \frac{\epsilon}{|\mathcal{A}(s)|},& \text{if } a = \pi(s),\\
+ 	\frac{\epsilon}{|\mathcal{A}(s)|}, & \text{otherwise}.
+ 	\end{cases}
+ 	\end{align}
+ 	We define $n_s\ldef |\mathcal{A}(s)|$. In order to account for the $\epsilon$-soft policy, the update rule in \textsc{Policy Evaluation} for $V(s)$ should be modified as
+ 	\begin{align*}
+ 	V(s) \leftarrow \sum_{a\in\mathcal{A}(s)} \left[ \left( (1-\epsilon) - \frac{\epsilon}{n_s} \right) \mathbbm{1}_{ a= \pi(s)}+ \left( \frac{\epsilon}{n_s} \right) \mathbbm{1}_{a\neq\pi(s)} \right] \sum_{s\in\statesp}\sum_{r\in\rewardsp} p(s',r|s,a) \left[r + \gamma V(s') \right]
+ 	\end{align*}
+ 	However, the \textsc{Policy Improvement} procedure will remain the same and will calculate the greedy policy $\pi(s)$ corresponding to values of $q_\pi(s,a)$. Thus nothing changes in $(3)$, the update rule for $V(s)$ is changed in $(2)$, and nothing changes for $(1)$.
+ 	%
+ 	\subsection*{Exercise 4.7}
+ 	\label{ss:4.7}
+ 	\addcontentsline{toc}{subsection}{\nameref{ss:4.7}}
+ 	{\large\textsc{Todo!}}
+ 	%
+ 	\subsection*{Exercise 4.8}
+ 	\label{ss:4.8}
+ 	\addcontentsline{toc}{subsection}{\nameref{ss:4.8}}
+ 	One thing to be noted about the current system is that $p_h<0.5$, i.e. the probability of getting winning stakes on any timestep is lower than the probability of losing the stakes. Thus, the optimal policy would be one which ensures that a loss on any timestep can do no worse than reverse the gains from a previous timestep. Thus we get the curious final policy when $p_h<5$. As can be noted from~\nameref{ss:4.9}, the same is not the case when $p_h>0.5$, where the optimal policy is to bet $\$ 1$ on every timestep.
+ 	%
+ 	\subsection*{Exercise 4.9}
+ 	\label{ss:4.9}
+ 	\addcontentsline{toc}{subsection}{\nameref{ss:4.9}}
+ 	\begin{figure}[H]
+ 		\centering
+ 		\begin{subfigure}{0.45\textwidth}
+ 			\fbox{\includegraphics[width=\linewidth]{figure/ex_4_9_fig_1.pdf}}
+ 			\caption{Optimal state value for $p_h=0.25$}
+ 		\end{subfigure}
+ 		\begin{subfigure}{0.45\textwidth}
+ 			\fbox{\includegraphics[width=\linewidth]{figure/ex_4_9_fig_2.pdf}}
+ 			\caption{Optimal actions for $p_h=0.25$}
+ 		\end{subfigure}
+ 		\begin{subfigure}{0.45\textwidth}
+ 			\fbox{\includegraphics[width=\linewidth]{figure/ex_4_9_fig_3.pdf}}
+ 			\caption{Optimal state value for $p_h=0.55$}
+ 		\end{subfigure}
+ 		\begin{subfigure}{0.45\textwidth}
+ 			\fbox{\includegraphics[width=\linewidth]{figure/ex_4_9_fig_4.pdf}}
+ 			\caption{Optimal actions for $p_h=0.55$}
+ 		\end{subfigure}
+ 	\end{figure}
+ 	For $p_h=0.25$, convergence is achieved for $\theta={10}^{-8}$ within $13$ sweeps of the state space, while for $p_h=0.55$, convergence is achieved for $\theta = {10}^{-4}$ within $511$ sweeps of the state space. For both choices of $p_h$, the optimal value function and optimal actions are stable as $\theta\rightarrow0$.
+ 	%
+ 	\subsection*{Exercise 4.10}
+ 	\label{ss:4.10}
+ 	\addcontentsline{toc}{subsection}{\nameref{ss:4.10}}
+ 	The analog of value iteration update $(4.10)$ for action values $q_{k+1}(s,a)$ is given as
+ 	\begin{align*}
+ 	q_{k+1}(s,a) = \sum_{s'\in\statesp}\sum_{r\in\rewardsp} p(s',r|s,a) \left[ r + \gamma \max\limits_{a'\in\mathcal{A}(s)} q_k(s',a') \right].
+ 	\end{align*}
+ 	%
+ 	\subsection*{Important note: Complexity of solving DP's}
+ 	\label{ss:dp-complexity}
+ 	\addcontentsline{toc}{subsection}{\nameref{ss:dp-complexity}}
+ 	In this section, we discuss a few points about the complexity of solving Dynamic Programming problems, and Markov Decision Process problems in general.
+ 	\begin{itemize}
+ 		\item Suppose the total number of states are $n$ and correspondingly there are $k$ available actions for each state. Even though the size of the state-action space is $n^k$, DP can find the optimum policy in polynomial time in $k$ and $n$.
+ 		\item Linear programming can be used to find optimal policies and its worst case runtime is lower than DP. However, in practice, the runtime of linear programming can become $100\times$ that of DP as the state space size increases.
+ 		\item \textbf{Curse of dimensionality} refers to the fact that as the number of states grows exponentially in the number of state variables. For example, consider the simplest case where we have $p$ state variables, each of which can assume $q$ values. Then the total number of states is given by $p^q$.
+ 		\item For large problems, asynchronous DP and variations of GPI (Generalized Policy Iteration) can help in reducing solution time.
+ 	\end{itemize}
+ 	%
+ 	\newpage
+ 	%
+ 	\section{Chapter 5}
+ 	%
+ 	\subsection*{Extra: MATLAB Implementation of blackjack problem}
+ 	\label{ex:blackjack}
+ 	\addcontentsline{toc}{subsection}{\nameref{ex:blackjack}}
+ 	The following results were derived by implementing Monte Carlo (MC) method for calculating value function in case of the blackjack problem (as given in the textbook).
+ 	 \begin{figure}[H]
+ 	 	\centering
+ 		\begin{subfigure}{0.45\textwidth}
+ 			\fbox{\includegraphics[width=\linewidth]{figure/ch_5_extra_fig_1.pdf}}
+ 		\end{subfigure}
+ 		\begin{subfigure}{0.45\textwidth}
+ 			\fbox{\includegraphics[width=\linewidth]{figure/ch_5_extra_fig_2.pdf}}
+ 		\end{subfigure}
+ 		\begin{subfigure}{0.45\textwidth}
+ 			\fbox{\includegraphics[width=\linewidth]{figure/ch_5_extra_fig_3.pdf}}
+ 		\end{subfigure}
+ 		\begin{subfigure}{0.45\textwidth}
+ 			\fbox{\includegraphics[width=\linewidth]{figure/ch_5_extra_fig_4.pdf}}
+ 		\end{subfigure}
+ 		\caption{Monte Carlo value estimates for both usable and non-usable cases, for different number of simulation episodes.}
+ 	\end{figure}
 \end{document}
