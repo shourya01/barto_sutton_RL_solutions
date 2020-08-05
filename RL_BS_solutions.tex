@@ -888,5 +888,117 @@
  			\fbox{\includegraphics[width=\linewidth]{figure/ch_5_extra_fig_4.pdf}}
  		\end{subfigure}
  		\caption{Monte Carlo value estimates for both usable and non-usable cases, for different number of simulation episodes.}
+ 		\label{fig:ex_5_1}
  	\end{figure}
+ 	%
+ 	\subsection*{Exercise 5.1}
+ 	\label{ss:5.1}
+ 	\addcontentsline{toc}{subsection}{\nameref{ss:5.1}}
+ 	It should be noted that the last two rows in of each subfigure in Figure~\ref{fig:ex_5_1} are the only state values for which the player can~\emph{stick} according to the prescribed policy. Due to this reason, these are the only states from where the player can win with a high probability, and due to this, the values of hese states are higher than the other states in the state space.
+ 	%
+ 	\subsection*{Exercise 5.2} 
+ 	\label{ss:5.2}
+ 	\addcontentsline{toc}{subsection}{\nameref{ss:5.2}}
+ 	First visit MC would \textbf{not} produce very different results from ever visit MC in case of blackjack. This is so because the two actions available to the player, \emph{viz.} \emph{hit} and \emph{stick} can either increase his sum, or terminate the episode. Thus, returning to the same state within an episode is not possible due to the way states have been defined in the game of blackjack, and therefore, first visit MC does not behave differently than every visit MC in this case.
+ 	%
+ 	\subsection*{Exercise 5.3} 
+ 	\label{ss:5.3}
+ 	\addcontentsline{toc}{subsection}{\nameref{ss:5.3}}
+ 	\begin{figure}[H]
+ 		\centering
+ 		\fbox{\includegraphics[width=0.1\linewidth]{figure/ex_5_3_fig_1}}
+ 		\caption{Backup diagram for MC estimation of $q_\pi(s,a)$.}
+ 	\end{figure}
+ 	%
+ 	\subsection*{Exercise 5.4} 
+ 	\label{ss:5.4}
+ 	\addcontentsline{toc}{subsection}{\nameref{ss:5.4}}
+ 	Let $Q_n(S_t,A_t)$ denote the estimate of $Q$-value of state-action pair $(S_t,A_t)$ after it has been encountered $n-1$. Let $G_1,G_2,\cdots,G_{n-1}$ be the recorded return on each of these encounters. Then we have
+ 	\begin{align*}
+ 	Q_n(S_t,A_t) = \frac{ G_1+G_2+\cdots+G_{n-1}}{n-1}.
+ 	\end{align*}
+ 	From the above formula, we can write the relationship between $Q_n(S_t,A_t)$ and $Q_{n+1}(S_t,At)$ as
+ 	\begin{align*}
+ 	nQ_{n+1}(S_t,A_t) - G_n &= (n-1) Q_n(S_t,A_t)\\
+ 	\therefore n\left(Q_{n+1}(S_t,A_t) - Q_n(S_t,A_t)\right) &= G_n - Q_n\\
+ 	\therefore Q_{n+1} (S_t,A_t) &= Q_n(S_t,A_t) + \frac{1}{n}\left(G_n - Q_n(S_t,A_t)\right).
+ 	\end{align*}
+ 	The above formula helps us calculate $Q_{n+1}(S_t,A_t)$ in terms of the present `mean' $Q_n(S_t,A_t)$ and the counter variable $n$. The changes to be done in Monte Carlo ES algorithm are as follows: during initialization, we should initialize counter variable $C(s,a)$ with value $0$ for every state $s\in\mathcal{S}$ and action $a\in\mathcal{A}(s)$, while \emph{removing} the initialization of $\textit{Returns}(S_t,A_t)$ from the pseudocode. Then, we should replace the lines
+ 	\begin{align*}
+ 	&\text{Append } G \text{ to } \textit{Returns}(S_t,A_t)\\
+ 	&Q(S_t,A_t) \leftarrow \text{average}\left( \textit{Returns}(S_t,A_t) \right)
+ 	\end{align*}
+ 	in the pseudocode with
+ 	\begin{align*}
+ 	&C(S_t,A_t) \leftarrow C(S_t,A_t) + 1\\
+ 	&Q(S_t,A_t) \leftarrow Q(S_t,A_t) + \frac{1}{C(S_t,A_t)} \left( G - Q(S_t,A_t) \right).
+ 	\end{align*}
+ 	%
+ 	\subsection*{Extra: Policy iteration with $\epsilon$-greedy policies}
+ 	\label{ex:pi-eps-greedy}
+ 	\addcontentsline{toc}{subsection}{\nameref{ex:pi-eps-greedy}}
+ 	In this section, we will show that policy iteration works with $\epsilon$-greedy policies, i.e. restricted to using $\epsilon$-greedy policies, policy iteration gives us the optimal value function and optimal policy in the space of $\epsilon$-greedy policies. To do this, we have to prove two things.
+ 	\begin{enumerate}
+ 		\item Policy improvement theorem works with $\epsilon$-greedy policies.
+ 		\item If $v_k(s) = v_{k+1}(s)$, then the $\epsilon$-greedy policy w.r.t $v_k(s)$ is the optimum $\epsilon$-greedy policy.
+ 	\end{enumerate}
+ 	To show the first part, assume that $\pi$ and $\pi'$ are $\epsilon$-greedy policies such that
+ 	\begin{align*}
+ 	a_* &= \arg\max_{a\in\actionspa} q_\pi(s,a)\\
+ 	\pi'(a|s) &= \begin{cases}
+ 	(1-\epsilon) + \frac{\epsilon}{|\actionspa|},& \text{if } a = a_*\\
+ 	\frac{\epsilon}{|\actionspa|},& \text{if } a\neq a_*.
+ 	\end{cases}
+ 	\end{align*}
+ 	Then we have
+ 	\begin{align*}
+ 	q_\pi(s,\pi'(a)) &= \sum_a \pi'(a|s) q_\pi(s,a)\\
+ 	&= \frac{\epsilon}{|\actionspa|} \sum_a q_\pi(s,a) + (1-\epsilon) \max\limits_a q_\pi(s,a)\\
+ 	&\stackrel{[r16]}{\geq} \frac{\epsilon}{|\actionspa|} \sum_a q_\pi(s,a) + (1-\epsilon) \sum_a \frac{ \pi(a|s) - \frac{\epsilon}{|\actionspa|}}{1-\epsilon} q_\pi(s,a)\\
+ 	&= \frac{\epsilon}{|\actionspa|} \sum_a q_\pi(s,a) - \frac{\epsilon}{|\actionspa|} \sum_a q_\pi(s,a) + \sum_a \pi(a|s)q_\pi(s,a)\\
+ 	&= v_\pi(s).
+ 	\end{align*}
+ 	The above validates policy improvement theorem for $\epsilon$-soft policies. Note that in [r16] we have used the fact that the summation in the second term is a weighted average of $q_\pi(s,a)$ with nonnegative weights for ll values of $a\in\actionspa$, and therefore it is lesser than or equal to $\max\limits_a q_\pi(s,a)$.\par\noindent
+ 	We now prove the second part. Assume a new environment which acts as follows: for any action chosen by the agent, the environment uses the same action with probability $1-\epsilon$, and chooses randomly (with equal probability) among all actions in the action space with probability $\epsilon$. Applying the deterministic greedy policy in such an environment would be equivalent to applying $\epsilon$-greedy policy in a normal environment. Let $\tilde{v}_*$ and $\tilde{q}_*$ be the optimal state and action values in this environment. Then we have
+ 	\begin{align}
+ 	\notag
+ 	\tilde{v}_*(s) &= (1-\epsilon) \max\limits_a \tilde{q}_* (s,a) + \frac{\epsilon}{|\actionspa|} \sum_a \tilde{q}_*(s,a)\\
+ 	\label{eq:e5.x_1}
+ 	&= (1-\epsilon) \max\limits_{a\in\mathcal{A}(s)} \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} p(s',r|s,a) \left[ r + \gamma\tilde{v}_*(s') \right] + \frac{\epsilon}{|\actionspa|} \sum_{a\in\mathcal{A}(s)} \sum_{s'\in\mathcal{S}} \sum_{r\in\rewardsp} p(s',r|s,a)\left[ r + \gamma\tilde{v}_* (s') \right]
+ 	\end{align}
+ 	On the other hand, in the original environment, when policy iteration no longer improves the $\epsilon$-soft policy, we have
+ 	\begin{align}
+ 	\notag
+ 	v_\pi(s) &= (1-\epsilon) \max\limits_a q_\pi(s,a) + \frac{\epsilon}{|\actionspa|} \sum_a q_\pi(s,a)\\
+ 	\label{eq:e5.x_2}
+ 	&= (1-\epsilon) \max\limits_{a\in\mathcal{A}(s)} \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} p(s',r|s,a) \left[ r + \gamma v_\pi(s') \right] + \frac{\epsilon}{|\actionspa|} \sum_{a\in\mathcal{A}(s)} \sum_{s'\in\mathcal{S}} \sum_{r\in\rewardsp} p(s',r|s,a)\left[ r + \gamma v_\pi(s') \right]
+ 	\end{align}
+ 	Note that equations~\eqref{eq:e5.x_1} and~\eqref{eq:e5.x_2} ae the same equations, and said equation has a unique solution. Call this unique solution $v_*$. Then we see that $v_*= v_\pi = \tilde{v}_* $, and therefore, the policy $\pi$ is optimal, thereby completing the proof.\par\noindent
+ 	While the statement considered in this section appears trivial, it is important in on-policy MC control, because it allows for natural exploration of the state space without using exploring starts (ES), which is a very restrictive assumption.
+ 	\subsection*{Extra: Importance Sampling Ratio}
+ 	\label{ex:imps-ratio}
+ 	\addcontentsline{toc}{subsection}{\nameref{ex:imps-ratio}}
+ 	\newcommand{\m}{\mu_{S_t}}
+ 	In this section, we prove the important result that 
+ 	\begin{align*}
+ 	\mathbb{E}_b \left[ \rho_{t:T-1} G_t | S_t = s \right] = v_\pi(s),
+ 	\end{align*}
+ 	where the \emph{importance sampling ratio} $\rho_{t:T-1}$ is given as
+ 	\begin{align}
+ 	\label{eq:e5.x_3}
+ 	\rho_{t:T-1} = \frac{ \prod_{k=t}^{T-1} \pi(A_k | S_k ) p(S_{k+1}|S_k,A_k)}{ \prod_{k=t}^{T-1} b(A_k | S_k ) p(S_{k+1}|S_k,A_k)} = \frac{ \prod_{k=t}^{T-1} \pi(A_k | S_k )}{ \prod_{k=t}^{T-1} b(A_k | S_k ) }.
+ 	\end{align}
+ 	For the proof, we let $\m$ be an index of all trajectories that start from state $S_t$. We denote the corresponding state-action trajectory by $\{ S_t, A^{\m}_t, S^{\m}_{t+1},A^{\m}_{t+1},\cdots, S^{\m}_{T-1},A^{\m}_{T-1},S^{\m}_T\}$ and the expected return $G_t$ associated with $\m$ by $g^{\m}$. We note that for any policy $\pi$,
+ 	\begin{align*}
+ 	P [G_t = g^{\m} | S_t = s, \pi] = \prod_{k=t}^{T-1} \pi(A^{\m}_k | S^{\m}_k) p(S^{\m}_{k+1}|S^{\m}_k,A^{\m}_k).
+ 	\end{align*}
+ 	Then we have,
+ 	\begin{align*}
+ 	\mathbb{E}_b \left[ \rho_{t:T-1} G_t | S_t = s\right] &= \sum_{\m} \rho_{t:T-1} g^{\m} P[G_t = g^{\m} | S_t = s,b]\\
+ 	&= \sum_{\m} \rho_{t:T-1} g^{\m}  \prod_{k=t}^{T-1} b(A^{\m}_k | S^{\m}_k) p(S^{\m}_{k+1}|S^{\m}_k,A^{\m}_k)\\
+ 	&\stackrel{[r17]}{=} \sum_{\m} g^{\m}  \prod_{k=t}^{T-1} \pi(A^{\m}_k | S^{\m}_k) p(S^{\m}_{k+1}|S^{\m}_k,A^{\m}_k)\\
+ 	&= \sum_{\m} g^{\m} P[G_t = g^{\m} | S_t = s,\pi]\\
+ 	&= \mathbb{E}_\pi \left[ G_t | S_t = s \right] = v_\pi(s),
+ 	\end{align*}
+ 	where in [17] we simply replace the value of $\rho_{t:T-1}$  from~\eqref{eq:e5.x_3}. This completes the proof.
 \end{document}
